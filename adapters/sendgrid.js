@@ -7,16 +7,25 @@
      */
     var adapter = function (config) {
         var lodash = require('lodash'),
+            q = require('q'),
             sendgrid = require('sendgrid')(config.apiKey);
 
         var service = {
 
             getEmailObject: function (emailConfig) {
-                return new sendgrid.Email(lodash.merge(config.emailConfig, emailConfig));
+                var email = new sendgrid.Email(lodash.merge(config.emailConfig, emailConfig));
+                if (emailConfig.substitutions) {
+                    email.setSubstitutions(emailConfig.substitutions);
+                }
+                if (emailConfig.filters) {
+                    email.setFilters(emailConfig.filters);
+                }
+
+                return email;
             },
 
-            getSendMethod: function () {
-                return 'send';
+            send: function (emailObject) {
+                return q.npost(sendgrid, 'send', [emailObject]);
             }
         };
 
