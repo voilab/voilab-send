@@ -1,0 +1,29 @@
+{
+  "name": "voilab-send",
+  "version": "0.1.0",
+  "description": "Library to send transactional emails",
+  "main": "voilab-send.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voilab/voilab-send.git"
+  },
+  "keywords": [
+    "email",
+    "send",
+    "sendgrid",
+    "transactional"
+  ],
+  "dependencies": {
+    "lodash": "4.*",
+    "q": "1.4.*"
+  },
+  "author": "Joël Poulin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/voilab/voilab-send/issues"
+  },
+  "homepage": "https://github.com/voilab/voilab-send#readme"
+}
