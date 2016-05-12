@@ -7,17 +7,10 @@
      *
      * @param {Object} [mailerConfig] A configuration object looking like this one:
      *                  {
-         *                      typefield: "type",                 // fieldname in database documents that holds the document type
-         *                      versionfield: "version",           // fieldname in database documents that holds the version number
-         *                      filenameSeparator: "::",           // usually in a noSQL database, you name your documents using some separator
-         *                      migrations_path: "../migrations/", // path to migrations files from that library
-         *                      parallelLimit: 8,                  // number of parallel upgrades in batch mode
-         *                      versions: {                        // optional: define here the up-to-date version number for each
-         *                          article: 1,                    //           document type. You can also omit this config and
-         *                          comment: 3                     //           manage your version numbers directly in the database
-         *                      }                                  //           in files named like [typefield][filenameSeparator][versionfield] and
-         *                  }                                      //           containing this kind of object: {"current": 3}
-     *
+     *                      apiKey: "'18459483509283750293852", // Usually, transactional email services requires an API KEY
+     *                      adapter: "sendgrid",                // Which service do you use ?
+     *                      emailConfig: { ... }                // Some email configuration, according to the chosen adapter
+     *                  }
      */
     var mailer = function (mailerConfig) {
         var lodash = require('lodash'),
