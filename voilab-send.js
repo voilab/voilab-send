@@ -29,16 +29,16 @@
                     html: "<p>Hi there, it's me !</p>"
                 }
             }, (mailerConfig || {})),
-            adapter = require('adapters/' + config.adapter)(config);
+            adapter = require('./adapters/' + config.adapter)(config);
 
         var service = {
 
             send: function (emailConfig) {
                 var email = adapter.getEmailObject(emailConfig);
 
-                return q.npost(adapter, adapter.getSendMethod(), [email])
+                return adapter.send(email)
                     .catch(function (e) {
-                        console.log('Email not sent to ' + user.getEmail());
+                        console.log('Email not sent to ' + emailConfig.to);
                         throw e;
                     });
             }
