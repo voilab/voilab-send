@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log*
+
+tests
+
+.vagrant
+Vagrantfile
+vagrant-bootstrap.sh
