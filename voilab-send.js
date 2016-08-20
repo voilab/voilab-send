@@ -14,7 +14,19 @@ var lodash = require('lodash'),
      * @param {Object} [config]
      */
     VoilabSend = function (config) {
-        this.config = lodash.assign({}, config || {});
+        lodash.assign(this, {
+            /**
+             * The mail adapter
+             * @var {Adapter}
+             */
+            adapter: null,
+
+            /**
+             * The configuration object
+             * @var {Object}
+             */
+            config: lodash.assign({}, config || {}),
+        });
 
         if (this.config.adapter) {
             var Adapter = require('./adapters/' + this.config.adapter)(this.config.adapterConfig);
@@ -23,18 +35,6 @@ var lodash = require('lodash'),
     };
 
 lodash.assign(VoilabSend.prototype, {
-
-    /**
-     * The mail adapter
-     * @var {Adapter}
-     */
-    adapter: null,
-
-    /**
-     * The configuration object
-     * @var {Object}
-     */
-    config: null,
 
     /**
      * Set an adapter, used to mainpulate and send email

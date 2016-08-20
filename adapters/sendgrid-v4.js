@@ -20,24 +20,24 @@ var adapter = function (config) {
         helpers = require('sendgrid').mail,
 
         Adapter = function () {
-            this.message = new helpers.Mail();
-            this.personalization = new helpers.Personalization();
+            lodash.assign(this, {
+                /**
+                 * Sendgrid helper Mail
+                 * @var Mail
+                 */
+                message: new helpers.Mail(),
+
+                /**
+                 * Personalization helper (contains to, cc, bcc)
+                 * @var Personalization
+                 */
+                personalization: new helpers.Personalization()
+            });
+
             this.message.addPersonalization(this.personalization);
         };
 
     lodash.assign(Adapter.prototype, {
-
-        /**
-         * Sendgrid helper Mail
-         * @var Mail
-         */
-        message: null,
-
-        /**
-         * Personalization helper (contains to, cc, bcc)
-         * @var Personalization
-         */
-        personalization: null,
 
         /**
          * Add a recipient
