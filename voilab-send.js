@@ -1,51 +1,107 @@
-/*jslint node: true, unparam: true, nomen: true */
-(function () {
-    'use strict';
+/*jslint node: true */
+'use strict';
+
+var lodash = require('lodash'),
 
     /**
-     * Public service
+     * Create a new mail sender. The configuration object has these properties:
      *
-     * @param {Object} [mailerConfig] A configuration object looking like this one:
-     *                  {
-     *                      apiKey: "'18459483509283750293852", // Usually, transactional email services requires an API KEY
-     *                      adapter: "sendgrid",                // Which service do you use ?
-     *                      emailConfig: { ... }                // Some email configuration, according to the chosen adapter
-     *                  }
+     * - {String} [adapter] the adapter file name (like `sendgrid-v4`)
+     * - {Object} [adapterConfig] adapter configuration
+     * - {Boolean] [debug] true to set debug mode
+     * - {String} [debugEmail] the email used in debug mode
+     *
+     * @param {Object} [config]
      */
-    var mailer = function (mailerConfig) {
-        var lodash = require('lodash'),
-            q = require('q'),
+    VoilabSend = function (config) {
+        lodash.assign(this, {
+            /**
+             * The mail adapter
+             * @var {Adapter}
+             */
+            adapter: null,
 
             /**
-             * Some private stuffs
+             * The configuration object
+             * @var {Object}
              */
-            config = lodash.merge({
-                adapter: 'sendgrid',
-                emailConfig: {
-                    to: 'you@yourdomain.org',
-                    from: 'me@mydomain.org',
-                    fromname: 'Me',
-                    subject: 'Dummy Test Email',
-                    html: "<p>Hi there, it's me !</p>"
-                }
-            }, (mailerConfig || {})),
-            adapter = require('./adapters/' + config.adapter)(config);
+            config: lodash.assign({}, config || {}),
+        });
 
-        var service = {
-
-            send: function (emailConfig) {
-                var email = adapter.getEmailObject(emailConfig);
-
-                return adapter.send(email)
-                    .catch(function (e) {
-                        console.log('Email not sent to ' + emailConfig.to);
-                        throw e;
-                    });
-            }
-        };
-
-        return service;
+        if (this.config.adapter) {
+            var Adapter = require('./adapters/' + this.config.adapter)(this.config.adapterConfig);
+            this.setAdapter(new Adapter());
+        }
     };
 
-    module.exports = mailer;
-}());
+lodash.assign(VoilabSend.prototype, {
+
+    /**
+     * Set an adapter, used to mainpulate and send email
+     *
+     * @param {Adapter} [adapter]
+     * @return {VoilabSend}
+     */
+    setAdapter: function (adapter) {
+        this.adapter = adapter;
+        return this;
+    },
+
+    /**
+     * Returns the configured adapter
+     *
+     * @return {Adapter}
+     */
+    getAdapter: function () {
+        return this.adapter;
+    },
+
+    /**
+     * Return configuration object
+     *
+     * @return {Object}
+     */
+    getConfig: function () {
+        return this.config;
+    },
+
+    /**
+     * Check if in debug mode. Debug mode simply remove all recipients (to, cc
+     * and bcc) and replace them with one custom email for tests
+     *
+     * @return {Boolean}
+     */
+    isDebug: function () {
+        return this.config.debug;
+    },
+
+    /**
+     * Send a mail
+     *
+     * @return {Promise}
+     */
+    send: function () {
+        if (this.isDebug()) {
+            this.adapter.resetRecipients();
+            if (!this.config.debugEmail) {
+                // no custom email is configurated. Throw an exception
+                throw new Error("Debug mode! You need to provide a custom email");
+            }
+            this.adapter.addTo(this.config.debugEmail);
+        }
+        return this.adapter.send();
+    },
+
+    /**
+     * Send a mail based on a provider template
+     *
+     * @param {String} [templateId] provider's template id
+     * @return {Promise}
+     */
+    sendTemplate: function (templateId) {
+        this.adapter.setTemplate(templateId);
+        return this.send();
+    }
+});
+
+module.exports = VoilabSend;
