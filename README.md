@@ -8,7 +8,8 @@ Transactional mailer
 var mailer = new (require('voilab-send'))({
     adapter: 'sendgrid-v4',
     adapterConfig: {
-        apikey: 'your-api-key'
+        apikey: 'your-api-key',
+        globalDataSurround: '-'
     }
 });
 
@@ -16,7 +17,8 @@ mailer.getAdapter()
     .setFrom('from@email.com')
     .addTo('to@email.co')
     .setSubject('A subject')
-    .setHtml('<p>Hello</p>');
+    .setHtml('<p>Hello -name-</p>')
+    .addGlobalData('name', 'John');
 
 mailer.send()
     .then(function () {
@@ -27,7 +29,6 @@ mailer.send()
     });
 ```
 
-Note that you'll need to add these dependencies into your own `package.json`:
+Note that you'll need to add this dependency into your own `package.json`:
 
-- `q` version `1.*`
 - `sendgrid` version `4.*`

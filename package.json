@@ -1,6 +1,6 @@
 {
     "name": "voilab-send",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Library to send transactional emails",
     "main": "voilab-send.js",
     "scripts": {
@@ -21,8 +21,7 @@
     },
     "devDependencies": {
         "express": "4.*",
-        "sendgrid": "4.*",
-        "q": "1.4.*"
+        "sendgrid": "4.*"
     },
     "author": "Voilab: Joël Poulin, Fabien Tafelmacher",
     "license": "MIT",
