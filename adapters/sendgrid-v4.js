@@ -5,9 +5,9 @@
  * Sendgrid V4 adapter. Configuration are:
  *
  * - {String} [apikey] the sendgrid api key
+ * - {String} [globalDataSurround] the string that surround global data key
  *
  * You will need to install some dependencies to make this adapter work
- * - q: 1.*
  * - sendgrid: 4.*
  *
  * @param {Object} [config]
@@ -15,21 +15,26 @@
  */
 var adapter = function (config) {
     var lodash = require('lodash'),
-        q = require('q'),
         sendgrid = require('sendgrid')(config.apikey),
         helpers = require('sendgrid').mail,
 
         Adapter = function () {
             lodash.assign(this, {
                 /**
+                 * The string that surround global data key
+                 * @var {String}
+                 */
+                globalDataSurround: config.globalDataSurround || '%',
+
+                /**
                  * Sendgrid helper Mail
-                 * @var Mail
+                 * @var {Mail}
                  */
                 message: new helpers.Mail(),
 
                 /**
                  * Personalization helper (contains to, cc, bcc)
-                 * @var Personalization
+                 * @var {Personalization}
                  */
                 personalization: new helpers.Personalization()
             });
@@ -49,6 +54,32 @@ var adapter = function (config) {
         addTo: function (email, name) {
             var recipient = new helpers.Email(email, name);
             this.personalization.addTo(recipient);
+            return this;
+        },
+
+        /**
+         * Add a recipient Cc
+         *
+         * @param {String} [email]
+         * @param {String} [name]
+         * @return {Adapter}
+         */
+        addCc: function (email, name) {
+            var recipient = new helpers.Email(email, name);
+            this.personalization.addCc(recipient);
+            return this;
+        },
+
+        /**
+         * Add a recipient Bcc
+         *
+         * @param {String} [email]
+         * @param {String} [name]
+         * @return {Adapter}
+         */
+        addBcc: function (email, name) {
+            var recipient = new helpers.Email(email, name);
+            this.personalization.addBcc(recipient);
             return this;
         },
 
@@ -101,6 +132,40 @@ var adapter = function (config) {
         },
 
         /**
+         * Add an attachment to the mail
+         *
+         * @param {String} content Base64 string representation of content
+         * @param {String} name file name
+         * @param {String} type file type
+         * @param {String} disposition attachment disposition
+         * @return {helpers.Attachment}
+         */
+        addAttachment: function (content, name, type, disposition) {
+            var attachment = new helpers.Attachment();
+            attachment.setContent(content);
+            attachment.setType(type);
+            attachment.setFilename(name);
+            attachment.setDisposition(disposition || 'attachment');
+
+            this.message.addAttachment(attachment);
+
+            return attachment;
+        },
+
+        /**
+         * Add a buffer as attachment to the mail
+         *
+         * @param {Buffer} buffer content
+         * @param {String} name file name
+         * @param {String} type file type
+         * @param {String} disposition attachment disposition
+         * @return {helpers.Attachment}
+         */
+        addBufferAttachment: function (buffer, name, type, disposition) {
+            return this.addAttachment(buffer.toString('base64'), name, type, disposition);
+        },
+
+        /**
          * Set all substitions variables in one shot
          *
          * @see addGlobalData
@@ -125,7 +190,9 @@ var adapter = function (config) {
          * @return {Adapter}
          */
         addGlobalData: function (key, value) {
-            var substitution = new helpers.Substitution('-' + key + '-', value);
+            var s = this.globalDataSurround,
+                substitution = new helpers.Substitution(s + key + s, value);
+
             this.personalization.addSubstitution(substitution);
             return this;
         },
@@ -160,22 +227,18 @@ var adapter = function (config) {
          * @return {Promise}
          */
         send: function () {
-            var deferred = q.defer(),
-                request = sendgrid.emptyRequest({
-                    method: 'POST',
-                    path: '/v3/mail/send',
-                    body: this.message
-                });
-
-            sendgrid.API(request, function (err, response) {
-                if (err) {
-                    console.dir(request, {depth: 5});
-                    console.log(response);
-                    return deferred.reject(err);
-                }
-                deferred.resolve(response);
+            var request = sendgrid.emptyRequest({
+                method: 'POST',
+                path: '/v3/mail/send',
+                body: this.message
             });
-            return deferred.promise;
+
+            return sendgrid.API(request)
+                .catch(function (err) {
+                    console.log(err);
+                    console.dir(request, {depth: 5});
+                    throw err;
+                });
         }
     });
 
