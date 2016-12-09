@@ -1,32 +1,33 @@
 {
-    "name": "voilab-send",
-    "version": "1.0.1",
-    "description": "Library to send transactional emails",
-    "main": "voilab-send.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/voilab/voilab-send.git"
-    },
-    "keywords": [
-        "email",
-        "send",
-        "sendgrid",
-        "transactional"
-    ],
-    "dependencies": {
-        "lodash": "4.*"
-    },
-    "devDependencies": {
-        "express": "4.*",
-        "sendgrid": "4.*"
-    },
-    "author": "Voilab: Joël Poulin, Fabien Tafelmacher",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/voilab/voilab-send/issues"
-    },
-    "homepage": "https://github.com/voilab/voilab-send#readme"
+  "name": "voilab-send",
+  "version": "1.0.2",
+  "description": "Library to send transactional emails",
+  "main": "voilab-send.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voilab/voilab-send.git"
+  },
+  "keywords": [
+    "email",
+    "send",
+    "sendgrid",
+    "transactional"
+  ],
+  "dependencies": {
+    "lodash": "4.*"
+  },
+  "devDependencies": {
+    "express": "4.*",
+    "sendgrid": "4.*",
+    "sparkpost": "1.*"
+  },
+  "author": "Voilab: Joël Poulin, Fabien Tafelmacher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/voilab/voilab-send/issues"
+  },
+  "homepage": "https://github.com/voilab/voilab-send#readme"
 }

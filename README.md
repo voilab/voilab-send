@@ -2,14 +2,11 @@
 Transactional mailer
 
 ## Basic usage
-
-### Sendgrid V4
 ```js
 var mailer = new (require('voilab-send'))({
-    adapter: 'sendgrid-v4',
+    adapter: 'some-adapter',
     adapterConfig: {
-        apikey: 'your-api-key',
-        globalDataSurround: '-'
+        someData: 'someConfig'
     }
 });
 
@@ -29,6 +26,32 @@ mailer.send()
     });
 ```
 
+### Sendgrid V4
+```js
+var mailer = new (require('voilab-send'))({
+    adapter: 'sendgrid-v4',
+    adapterConfig: {
+        apikey: 'your-api-key',
+        globalDataSurround: '-'
+    }
+});
+```
+
 Note that you'll need to add this dependency into your own `package.json`:
 
 - `sendgrid` version `4.*`
+
+### Sparkpost V1
+```js
+var mailer = new (require('voilab-send'))({
+    adapter: 'sparkpost-v1',
+    adapterConfig: {
+        apikey: 'your-api-key'
+    }
+});
+```
+
+Note that you'll need to add these dependencies into your own `package.json`:
+
+- `sparkpost` version `1.*`
+- `q` version `1.*`
