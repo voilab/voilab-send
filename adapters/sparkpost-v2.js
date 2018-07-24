@@ -240,6 +240,8 @@ let adapter = function (config) {
          */
         resetRecipients() {
             this.message.recipients = [];
+            this.message.cc = [];
+            this.message.bcc = [];
             return this;
         },
 
