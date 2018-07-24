@@ -39,12 +39,12 @@ var mailer = new (require('voilab-send'))({
 
 Note that you'll need to add this dependency into your own `package.json`:
 
-- `sendgrid` version `4.*`
+- `sendgrid` version `5.*`
 
-### Sparkpost V1
+### Sparkpost V2
 ```js
 var mailer = new (require('voilab-send'))({
-    adapter: 'sparkpost-v1',
+    adapter: 'sparkpost-v2',
     adapterConfig: {
         apikey: 'your-api-key'
     }
@@ -53,5 +53,4 @@ var mailer = new (require('voilab-send'))({
 
 Note that you'll need to add these dependencies into your own `package.json`:
 
-- `sparkpost` version `1.*`
-- `q` version `1.*`
+- `sparkpost` version `2.*`
