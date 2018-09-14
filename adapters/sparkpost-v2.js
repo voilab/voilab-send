@@ -52,8 +52,14 @@ let adapter = function (config) {
                     }
                 });
             } else {
-                this.message.recipients.push({
-                    address: email
+                var self = this;
+                email.split(',').forEach((e) => {
+                    e = lodash.trim(e);
+                    if (e) {
+                        this.message.recipients.push({
+                            address: e
+                        });
+                    }
                 });
             }
             return this;
@@ -78,10 +84,16 @@ let adapter = function (config) {
                     }
                 });
             } else {
-                this.message.cc.push({
-                    address: email,
-                    substitution_data: {
-                        recipient_type: 'CC'
+                var self = this;
+                email.split(',').forEach((e) => {
+                    e = lodash.trim(e);
+                    if (e) {
+                        this.message.cc.push({
+                            address: e,
+                            substitution_data: {
+                                recipient_type: 'CC'
+                            }
+                        });
                     }
                 });
             }
@@ -106,10 +118,16 @@ let adapter = function (config) {
                     }
                 });
             } else {
-                this.message.bcc.push({
-                    address: email,
-                    substitution_data: {
-                        recipient_type: 'BCC'
+                var self = this;
+                email.split(',').forEach((e) => {
+                    e = lodash.trim(e);
+                    if (e) {
+                        this.message.bcc.push({
+                            address: e,
+                            substitution_data: {
+                                recipient_type: 'BCC'
+                            }
+                        });
                     }
                 });
             }

@@ -47,39 +47,54 @@ var adapter = function (config) {
         /**
          * Add a recipient
          *
-         * @param {String} [email]
+         * @param {String} email can be comma-separated emails
          * @param {String} [name]
          * @return {Adapter}
          */
         addTo: function (email, name) {
-            var recipient = new helpers.Email(email, name);
-            this.personalization.addTo(recipient);
+            email.split(',').forEach((e) => {
+                e = lodash.trim(e);
+                if (e) {
+                    var recipient = new helpers.Email(e, name);
+                    this.personalization.addTo(recipient);
+                }
+            });
             return this;
         },
 
         /**
          * Add a recipient Cc
          *
-         * @param {String} [email]
+         * @param {String} email can be comma-separated emails
          * @param {String} [name]
          * @return {Adapter}
          */
         addCc: function (email, name) {
-            var recipient = new helpers.Email(email, name);
-            this.personalization.addCc(recipient);
+            email.split(',').forEach((e) => {
+                e = lodash.trim(e);
+                if (e) {
+                    var recipient = new helpers.Email(e, name);
+                    this.personalization.addCc(recipient);
+                }
+            });
             return this;
         },
 
         /**
          * Add a recipient Bcc
          *
-         * @param {String} [email]
+         * @param {String} email can be comma-separated emails
          * @param {String} [name]
          * @return {Adapter}
          */
         addBcc: function (email, name) {
-            var recipient = new helpers.Email(email, name);
-            this.personalization.addBcc(recipient);
+            email.split(',').forEach((e) => {
+                e = lodash.trim(e);
+                if (e) {
+                    var recipient = new helpers.Email(e, name);
+                    this.personalization.addBcc(recipient);
+                }
+            });
             return this;
         },
 
@@ -99,7 +114,7 @@ var adapter = function (config) {
         /**
          * Set subject
          *
-         * @param {String} sub[ject
+         * @param {String} subject
          * @return {Adapter}
          */
         setSubject: function (subject) {
