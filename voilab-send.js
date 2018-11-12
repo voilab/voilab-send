@@ -2,6 +2,7 @@
 'use strict';
 
 var lodash = require('lodash'),
+    debug = require('debug')('voilab-mailer'),
 
     /**
      * Create a new mail sender. The configuration object has these properties:
@@ -84,8 +85,10 @@ lodash.assign(VoilabSend.prototype, {
         if (this.isDebug()) {
             this.adapter.resetRecipients();
             if (!this.config.debugEmail) {
+                var str = 'Debug mode! You need to provide a custom email';
+                debug(str);
                 // no custom email is configurated. Throw an exception
-                throw new Error("Debug mode! You need to provide a custom email");
+                throw new Error(str);
             }
             this.adapter.addTo(this.config.debugEmail);
         }

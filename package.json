@@ -1,6 +1,6 @@
 {
   "name": "voilab-send",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Library to send transactional emails",
   "main": "voilab-send.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "transactional"
   ],
   "dependencies": {
+    "debug": "^4.1.0",
     "lodash": "^4.17.10"
   },
   "devDependencies": {
