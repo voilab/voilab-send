@@ -39,6 +39,7 @@ var adapter = function (config) {
                 personalization: new helpers.Personalization()
             });
 
+            this.personalization.setSubstitutionWrappers([this.globalDataSurround, this.globalDataSurround]);
             this.message.addPersonalization(this.personalization);
         };
 
@@ -205,10 +206,7 @@ var adapter = function (config) {
          * @return {Adapter}
          */
         addGlobalData: function (key, value) {
-            var s = this.globalDataSurround,
-                substitution = new helpers.Substitution(s + key + s, value);
-
-            this.personalization.addSubstitution(substitution);
+            this.personalization.addSubstitution(key, value);
             return this;
         },
 
@@ -234,7 +232,10 @@ var adapter = function (config) {
          * @return {Adapter}
          */
         resetRecipients: function () {
+            var subs = Object.assign({}, this.personalization.substitutions);
             this.personalization = new helpers.Personalization();
+            this.personalization.substitutions = subs;
+            this.personalization.setSubstitutionWrappers([this.globalDataSurround, this.globalDataSurround]);
             this.message.setPersonalizations([this.personalization]);
             return this;
         },
