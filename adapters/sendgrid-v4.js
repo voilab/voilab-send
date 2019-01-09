@@ -8,7 +8,7 @@
  * - {String} [globalDataSurround] the string that surround global data key
  *
  * You will need to install some dependencies to make this adapter work
- * - sendgrid: 4.*
+ * - sendgrid: ^5.0.0
  *
  * @param {Object} [config]
  * @return {Adapter}
@@ -17,6 +17,14 @@ var adapter = function (config) {
     var lodash = require('lodash'),
         sendgrid = require('sendgrid')(config.apikey),
         helpers = require('sendgrid').mail,
+
+        emailExists = function (personalization, email) {
+            var emails = (personalization.tos || [])
+                .concat(personalization.ccs || [])
+                .concat(personalization.bccs || []);
+
+            return lodash.map(emails, 'email').indexOf(email) !== -1;
+        },
 
         Adapter = function () {
             lodash.assign(this, {
@@ -54,7 +62,7 @@ var adapter = function (config) {
         addTo: function (email, name) {
             email.split(',').forEach((e) => {
                 e = lodash.trim(e);
-                if (e) {
+                if (e && !emailExists(this.personalization, e)) {
                     var recipient = new helpers.Email(e, name);
                     this.personalization.addTo(recipient);
                 }
@@ -72,7 +80,7 @@ var adapter = function (config) {
         addCc: function (email, name) {
             email.split(',').forEach((e) => {
                 e = lodash.trim(e);
-                if (e) {
+                if (e && !emailExists(this.personalization, e)) {
                     var recipient = new helpers.Email(e, name);
                     this.personalization.addCc(recipient);
                 }
@@ -90,7 +98,7 @@ var adapter = function (config) {
         addBcc: function (email, name) {
             email.split(',').forEach((e) => {
                 e = lodash.trim(e);
-                if (e) {
+                if (e && !emailExists(this.personalization, e)) {
                     var recipient = new helpers.Email(e, name);
                     this.personalization.addBcc(recipient);
                 }
