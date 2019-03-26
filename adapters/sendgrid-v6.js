@@ -255,7 +255,9 @@ var adapter = function (config) {
          * @return {Promise}
          */
         send: function () {
-            this.message.applyDynamicTemplateData(this.personalization);
+            if (this.message.dynamicTemplateData) {
+                this.message.applyDynamicTemplateData(this.personalization);
+            }
             return sendgrid.send(this.message)
                 .catch(function (err) {
                     console.log(err);
