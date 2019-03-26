@@ -49,6 +49,7 @@ var adapter = function (config) {
 
             this.personalization.setSubstitutionWrappers([this.globalDataSurround, this.globalDataSurround]);
             this.message.addPersonalization(this.personalization);
+            this.personalization.dynamicTemplateData = {};
         };
 
     sendgrid.setApiKey(config.apikey);
@@ -245,6 +246,9 @@ var adapter = function (config) {
             this.personalization.substitutions = subs;
             this.personalization.setSubstitutionWrappers([this.globalDataSurround, this.globalDataSurround]);
             this.message.setPersonalizations([this.personalization]);
+            if (!this.message.dynamicTemplateData) {
+                this.personalization.dynamicTemplateData = {};
+            }
             return this;
         },
 
