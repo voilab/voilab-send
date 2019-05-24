@@ -260,6 +260,7 @@ var adapter = function (config) {
          */
         send: function () {
             if (this.message.dynamicTemplateData) {
+		this.personalization.dynamicTemplateData = {};
                 this.message.applyDynamicTemplateData(this.personalization);
             }
             return sendgrid.send(this.message)
