@@ -23,7 +23,11 @@ var adapter = function (config) {
                 .concat(personalization.cc || [])
                 .concat(personalization.bcc || []);
 
-            return lodash.map(emails, 'email').indexOf(email) !== -1;
+            return lodash
+                .map(emails, function (e) {
+                    return e.email.toLowerCase();
+                })
+                .indexOf(email.toLowerCase()) !== -1;
         },
 
         Adapter = function () {
@@ -260,7 +264,7 @@ var adapter = function (config) {
          */
         send: function () {
             if (this.message.dynamicTemplateData) {
-		this.personalization.dynamicTemplateData = {};
+                this.personalization.dynamicTemplateData = {};
                 this.message.applyDynamicTemplateData(this.personalization);
             }
             return sendgrid.send(this.message)
