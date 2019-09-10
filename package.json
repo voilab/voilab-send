@@ -1,6 +1,6 @@
 {
   "name": "voilab-send",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Library to send transactional emails",
   "main": "voilab-send.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "devDependencies": {
     "@sendgrid/mail": "^6.3.1",
     "express": "^4.16.3",
+    "nodemailer": "^6.3.0",
     "sendgrid": "^5.2.3",
     "sparkpost": "^2.1.2"
   },
