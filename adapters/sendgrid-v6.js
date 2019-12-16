@@ -302,7 +302,6 @@ var adapter = function (config) {
                         }
                         messages.push(msg);
                     });
-                    console.dir(messages, { depth: null })
                     return Promise.map(messages, msg => sendgrid.send(msg))
                 })
                 .catch(function (err) {

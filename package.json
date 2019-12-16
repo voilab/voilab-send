@@ -1,6 +1,6 @@
 {
   "name": "voilab-send",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Library to send transactional emails",
   "main": "voilab-send.js",
   "scripts": {
