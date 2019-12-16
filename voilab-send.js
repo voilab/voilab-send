@@ -1,41 +1,38 @@
-/*jslint node: true */
-'use strict';
 
-var lodash = require('lodash'),
-    debug = require('debug')('voilab-mailer'),
+const debug = require('debug')('voilab-mailer');
 
-    /**
-     * Create a new mail sender. The configuration object has these properties:
-     *
-     * - {String} [adapter] the adapter file name (like `sendgrid-v4`)
-     * - {Object} [adapterConfig] adapter configuration
-     * - {Boolean] [debug] true to set debug mode
-     * - {String} [debugEmail] the email used in debug mode
-     *
-     * @param {Object} [config]
-     */
-    VoilabSend = function (config) {
-        lodash.assign(this, {
-            /**
-             * The mail adapter
-             * @var {Adapter}
-             */
-            adapter: null,
+/**
+ * Create a new mail sender. The configuration object has these properties:
+ *
+ * - {String} [adapter] the adapter file name (like `sendgrid-v4`)
+ * - {Object} [adapterConfig] adapter configuration
+ * - {Boolean] [debug] true to set debug mode
+ * - {String} [debugEmail] the email used in debug mode
+ *
+ * @param {Object} [config]
+ */
+const VoilabSend = function (config) {
+    Object.assign(this, {
+        /**
+         * The mail adapter
+         * @var {Adapter}
+         */
+        adapter: null,
 
-            /**
-             * The configuration object
-             * @var {Object}
-             */
-            config: lodash.assign({}, config || {}),
-        });
+        /**
+         * The configuration object
+         * @var {Object}
+         */
+        config: Object.assign({}, config || {}),
+    });
 
-        if (this.config.adapter) {
-            var Adapter = require('./adapters/' + this.config.adapter)(this.config.adapterConfig);
-            this.setAdapter(new Adapter());
-        }
-    };
+    if (this.config.adapter) {
+        const Adapter = require('./adapters/' + this.config.adapter)(this.config.adapterConfig);
+        this.setAdapter(new Adapter());
+    }
+};
 
-lodash.assign(VoilabSend.prototype, {
+Object.assign(VoilabSend.prototype, {
 
     /**
      * Set an adapter, used to mainpulate and send email
@@ -43,7 +40,7 @@ lodash.assign(VoilabSend.prototype, {
      * @param {Adapter} [adapter]
      * @return {VoilabSend}
      */
-    setAdapter: function (adapter) {
+    setAdapter(adapter) {
         this.adapter = adapter;
         return this;
     },
@@ -53,7 +50,7 @@ lodash.assign(VoilabSend.prototype, {
      *
      * @return {Adapter}
      */
-    getAdapter: function () {
+    getAdapter() {
         return this.adapter;
     },
 
@@ -62,7 +59,7 @@ lodash.assign(VoilabSend.prototype, {
      *
      * @return {Object}
      */
-    getConfig: function () {
+    getConfig() {
         return this.config;
     },
 
@@ -72,7 +69,7 @@ lodash.assign(VoilabSend.prototype, {
      *
      * @return {Boolean}
      */
-    isDebug: function () {
+    isDebug() {
         return this.config.debug;
     },
 
@@ -81,11 +78,11 @@ lodash.assign(VoilabSend.prototype, {
      *
      * @return {Promise}
      */
-    send: function () {
+    send() {
         if (this.isDebug()) {
             this.adapter.resetRecipients();
             if (!this.config.debugEmail) {
-                var str = 'Debug mode! You need to provide a custom email';
+                const str = 'Debug mode! You need to provide a custom email';
                 debug(str);
                 // no custom email is configurated. Throw an exception
                 throw new Error(str);
@@ -101,7 +98,7 @@ lodash.assign(VoilabSend.prototype, {
      * @param {String} [templateId] provider's template id
      * @return {Promise}
      */
-    sendTemplate: function (templateId) {
+    sendTemplate(templateId) {
         this.adapter.setTemplate(templateId);
         return this.send();
     }

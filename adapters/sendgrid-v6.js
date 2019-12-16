@@ -6,6 +6,7 @@
  *
  * - {String} [apikey] the sendgrid api key
  * - {String} [globalDataSurround] the string that surround global data key
+ * - {Boolean} [cciAsEmail] TRUE to send separate email for each Cci
  *
  * You will need to install some dependencies to make this adapter work
  * - sendgrid: ^6.0.0
@@ -195,7 +196,7 @@ var adapter = function (config) {
         },
 
         /**
-         * Set all substitions variables in one shot
+         * Set all substitutions variables in one shot
          *
          * @see addGlobalData
          * @param {Object} [data] key-value pairs
@@ -263,11 +264,47 @@ var adapter = function (config) {
          * @return {Promise}
          */
         send: function () {
+            const Promise = require('bluebird');
             if (this.message.dynamicTemplateData) {
                 this.personalization.dynamicTemplateData = {};
                 this.message.applyDynamicTemplateData(this.personalization);
             }
-            return sendgrid.send(this.message)
+            return Promise
+                .try(() => {
+                    if (!config.cciAsEmail || !this.personalization.bcc || !this.personalization.bcc.length) {
+                        return sendgrid.send(this.message)
+                    }
+                    const bcc = this.personalization.bcc.slice();
+                    this.personalization.bcc = [];
+                    if (this.message.dynamicTemplateData) {
+                        this.personalization.dynamicTemplateData.cciName = '';
+                        this.personalization.dynamicTemplateData.cciEmail = '';
+                    } else if (this.personalization.substitutions) {
+                        this.personalization.substitutions.cciName = '';
+                        this.personalization.substitutions.cciEmail = '';
+                    }
+
+                    const messages = [lodash.cloneDeep(this.message)];
+                    const to = messages[0].personalizations[0].to[0];
+                    bcc.forEach(b => {
+                        const msg = lodash.cloneDeep(this.message);
+                        const pr = msg.personalizations[0];
+                        pr.cc = [];
+
+                        pr.to[0].email = b.email;
+                        pr.to[0].name = b.name;
+                        if (this.message.dynamicTemplateData) {
+                            pr.dynamicTemplateData.cciName = to.name;
+                            pr.dynamicTemplateData.cciEmail = to.email;
+                        } else if (pr.substitutions) {
+                            pr.substitutions.cciName = to.name;
+                            pr.substitutions.cciEmail = to.email;
+                        }
+                        messages.push(msg);
+                    });
+                    console.dir(messages, { depth: null })
+                    return Promise.map(messages, msg => sendgrid.send(msg))
+                })
                 .catch(function (err) {
                     console.log(err);
                     console.dir(err && err.response && err.response.body, { depth: 10 });
